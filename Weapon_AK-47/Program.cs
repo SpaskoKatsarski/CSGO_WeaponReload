@@ -8,6 +8,7 @@ namespace Weapon_AK_47
         static void Main(string[] args)
         {
             const int ReloadingAndRemovingAmmo = 30;
+            const int FullPackage = 90;
 
             // Make a program that tracks the ammo in the weapon AK-47
 
@@ -15,6 +16,19 @@ namespace Weapon_AK_47
             int restAmmo = 90;
 
             // TODO: Do the following commands:
+            // Add the rest of the commands.
+
+            //  Shooting x30
+            //  Ammo: 30 / 60
+            //  Shooting x30
+            //  Ammo: 30 / 30
+            //  Reload
+            //  Magazine state: Full
+            //  Shooting x3
+            //  Ammo: 27 / 30
+            //  Reload
+            //  Ammo: 57 / 0
+
             // commands:
             // Shoot - Remove 1 ammo from the magazine
             // Shooting x{n - Times} - Remove {n} bullets from the magazine
@@ -26,7 +40,7 @@ namespace Weapon_AK_47
             // Shooting x30
 
             string command = Console.ReadLine();
-            while (restAmmo != 0 || magazineAmmo != 0)
+            while (true)
             {
                 string[] cmdArgs = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
@@ -64,13 +78,16 @@ namespace Weapon_AK_47
                         continue;
                     }
 
-                    if (magazineAmmo >= 30 && restAmmo == 0)
+                    if (magazineAmmo < 30 && restAmmo == 0)
                     {
                         Console.WriteLine($"Not enough bullets to reload");
+
+                        command = Console.ReadLine();
+                        continue;
                     }
-                    else if (restAmmo - ReloadingAndRemovingAmmo <= 0)
+                    else if (restAmmo - ReloadingAndRemovingAmmo < 0)
                     {
-                        magazineAmmo += restAmmo;
+                        magazineAmmo = ReloadingAndRemovingAmmo;
                         restAmmo = 0;
                     }
                     else
@@ -78,6 +95,25 @@ namespace Weapon_AK_47
                         restAmmo -= ReloadingAndRemovingAmmo - magazineAmmo;
                         magazineAmmo = ReloadingAndRemovingAmmo;
                     }
+                }
+                else if (action == "Playtime")
+                {
+                    magazineAmmo = 0;
+                }
+                else if (action == "Buy" && cmdArgs[1] == "new" && cmdArgs[2] == "AK-47")
+                {
+                    magazineAmmo = ReloadingAndRemovingAmmo;
+                    restAmmo = FullPackage;
+
+                    Console.WriteLine("You have bought AK-47.");
+                    command = Console.ReadLine();
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command!");
+                    command = Console.ReadLine();
+                    continue;
                 }
 
                 if (magazineAmmo == 0)
@@ -96,6 +132,11 @@ namespace Weapon_AK_47
                         magazineAmmo += ReloadingAndRemovingAmmo;
                         restAmmo -= ReloadingAndRemovingAmmo;
                     }
+                }
+
+                if (restAmmo == 0 && magazineAmmo == 0)
+                {
+                    break;
                 }
 
                 Console.WriteLine($"Ammo: {magazineAmmo} / {restAmmo}");
